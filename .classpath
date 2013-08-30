@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry excluding="src/|org/" kind="src" path=""/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="/Users/pupoque/Workspace/java/linearmath/linearmath.jar" sourcepath="/Users/pupoque/Workspace/java/linearmath/linearmath-src">
+		<attributes>
+			<attribute name="source_encoding" value="UTF-8"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="/Users/pupoque/Workspace/java/workspace_compadre/osp/bin"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
