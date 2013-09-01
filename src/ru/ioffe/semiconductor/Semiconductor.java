@@ -8,13 +8,8 @@ package ru.ioffe.semiconductor;
 abstract class Semiconductor {
 
 	// Lattice info
-	abstract double getA();
 
-	abstract double getB();
-
-	abstract double getC();
-
-	abstract double getCellVolume();
+	abstract double getLattice();
 
 	abstract double getEnergyGap();
 
@@ -26,22 +21,22 @@ abstract class Semiconductor {
 
 	abstract double[] getElasticTensor();
 
-	abstract double get_mass_el_a();
+	abstract double getMassElA();
 
-	abstract double get_mass_el_b();
+	abstract double getMassElB();
 
-	abstract double get_mass_el_c();
+	abstract double getMassElC();
 
-	abstract double get_mass_lh_a();
+	abstract double getMassLHA();
 
-	abstract double get_mass_lh_b();
+	abstract double getMassLHB();
 
-	abstract double get_mass_lh_c();
+	abstract double getMassLHC();
 
-	abstract double get_mass_hh_a();
+	abstract double getMassHHA();
 
-	abstract double get_mass_hh_b();
+	abstract double getMassHHB();
 
-	abstract double get_mass_hh_c();
+	abstract double getMassHHC();
 
 }

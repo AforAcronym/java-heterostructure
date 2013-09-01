@@ -106,8 +106,8 @@ public class CompoundW extends SemiconductorW {
 
         this.x = x;
         this.temperature = T;
-        A.setTemperuture(T);
-        B.setTemperuture(T);
+        A.setTemperature(T);
+        B.setTemperature(T);
     }
 
     public final double vegard(double par1, double par2) {
