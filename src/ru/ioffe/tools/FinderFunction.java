@@ -2,7 +2,7 @@ package ru.ioffe.tools;
 
 public class FinderFunction {
 
-	public static double findRootByBisecttion(double x_start, double x_end,
+	public static double findRootByBisection(double x_start, double x_end,
 			Function func) {
 		double x_middle = (x_start + x_end) / 2;
 		double y_start = func.call(x_start);

@@ -136,7 +136,7 @@ public strictfp class MatterStack {
 	 * @return
 	 */
 	public ComplexMatrix getPropagationMatrix(int index, double energy) {
-		ComplexMatrix mx = ComplexMatrix.initIdentityMatrix(2);
+		ComplexMatrix mx = ComplexMatrix.identityMatrix(2);
 		for (int i = 0; i < index; i++) {
 			try {
 				mx = getLocalPropagationMatrix(i, energy).multiply(mx);
@@ -382,12 +382,12 @@ public strictfp class MatterStack {
 	public void plotPropagationCurves() {
 		double[] eRange = getEnergyRange();
 		// X label, Y label, plot title
-		PlotFrame frame = new PlotFrame("Energy, eV",
-				"Propagation, arb. units", "QW Propagation Curves");
+		PlotFrame frame = new PlotFrame("Energy, eV", 
+										"Propagation, arb. units", 
+										"QW Propagation Curves");
 		// Filling the curve data
 		for (int i = 0; i < eRange.length; i++) {
-			frame.append(0, Utils.erg2ev(eRange[i]),
-					getPropagationValueLog(eRange[i]));
+			frame.append(0, Utils.erg2ev(eRange[i]), getPropagationValueLog(eRange[i]));
 		}
 		// No markers
 		frame.setMarkerShape(0, 0);

@@ -231,7 +231,7 @@ public  strictfp class MatterStackGhatak {
 	 * @return
 	 */
 	public ComplexMatrix getPropagationMatrix(int index, double energy) {
-		ComplexMatrix mx = ComplexMatrix.initIdentityMatrix(2);
+		ComplexMatrix mx = ComplexMatrix.identityMatrix(2);
 		for (int i = index; i < intervals.size() - 1; i++) {
 			try {
 				mx = mx.multiply(getLocalPropagationMatrix(i, energy));
