@@ -3,23 +3,27 @@ package ru.ioffe.semiconductor;
 abstract class Lattice {
 
 	// Lattice parameters at desired temperature T
-	protected double a, b, c;
+	// protected double a, b, c;
+	protected double a;
 
 	// Lattice parameters at T=0
-	protected double a0, b0, c0;
+	// protected double a0, b0, c0;
+	protected double a0;
 
 	// Temperature in Kelvins
 	protected double temperature;
 
 	// TEC - Temperature expansion coefficients for parameter a, 1/K
 
-	protected double a_TEC, b_TEC, c_TEC;
+	protected double a_TEC;
+	// protected double a_TEC, b_TEC, c_TEC;
 
 	// Tch - Characteristic (Debye) temperature for parameter c, K
-	protected double a_Tch, b_Tch, c_Tch;
+	// protected double a_Tch, b_Tch, c_Tch;
+	protected double a_Tch;
 
 	/**
-	 * This method sets temerapture dependent values of bulk semiconductor
+	 * This method sets temperature dependent values of bulk semiconductor
 	 * 
 	 * @param T
 	 *            temperature in Kelvins
@@ -50,16 +54,16 @@ abstract class Lattice {
 	public double getA() {
 		return a;
 	}
-
-	public double getB() {
-		return b;
-	}
-
-	public double getC() {
-		return c;
-	}
+//
+//	public double getB() {
+//		return b;
+//	}
+//
+//	public double getC() {
+//		return c;
+//	}
 
 	public double getCellVolume() {
-		return 0;
+		return a * a * a;
 	}
 }
