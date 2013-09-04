@@ -17,7 +17,7 @@ public class Plot {
 		// "First Plot");
 		// frame.setSize(400, 400);
 		// for (double x = -10, dx = 0.1; x < 10; x += dx) {
-		// frame.append(0, x, Math.sin(x));
+		// frame.append(0, x, Math.stype filter textin(x));
 		// }
 		// frame.setVisible(true);
 		// frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
