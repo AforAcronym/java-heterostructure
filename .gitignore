@@ -5,3 +5,7 @@
 /nbproject/
 /.classpath
 /bin
+/.settings/
+/ant/
+/osp.jardesc
+/src/overview.html
