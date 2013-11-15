@@ -5,9 +5,8 @@
 package ru.ioffe.semiconductor;
 
 /**
- *
  * @author Evgeny Shevchenko
  */
 abstract class Compound extends Semiconductor {
-    
+
 }

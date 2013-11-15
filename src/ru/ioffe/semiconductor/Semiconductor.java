@@ -1,71 +1,55 @@
 package ru.ioffe.semiconductor;
 
 /**
- * 
  * @author Evgeny Shevchenko
  * @version 0.1
  */
-abstract class Semiconductor
-{
+abstract class Semiconductor {
 
-	// Lattice info
+    // Lattice info
 
-	abstract double getLattice();
-
+    abstract double getLattice();
 
 
-	abstract double getEnergyGap();
+    abstract double getEnergyGap();
 
 
-
-	abstract double getStaticPermitivity();
-
+    abstract double getStaticPermitivity();
 
 
-	abstract double[] getMassTensor();
+    abstract double[] getMassTensor();
 
 
-
-	abstract double[] getPiezoTensor();
-
+    abstract double[] getPiezoTensor();
 
 
-	abstract double[] getElasticTensor();
+    abstract double[] getElasticTensor();
 
 
-
-	abstract double getMassElA();
-
+    abstract double getMassElA();
 
 
-	abstract double getMassElB();
+    abstract double getMassElB();
 
 
-
-	abstract double getMassElC();
-
+    abstract double getMassElC();
 
 
-	abstract double getMassLHA();
+    abstract double getMassLHA();
 
 
-
-	abstract double getMassLHB();
-
+    abstract double getMassLHB();
 
 
-	abstract double getMassLHC();
+    abstract double getMassLHC();
 
 
-
-	abstract double getMassHHA();
-
+    abstract double getMassHHA();
 
 
-	abstract double getMassHHB();
+    abstract double getMassHHB();
 
 
-
-	abstract double getMassHHC();
+    abstract double getMassHHC();
 
 }
