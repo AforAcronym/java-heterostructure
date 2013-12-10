@@ -120,7 +120,7 @@ public strictfp class MatterStack {
         try {
             return new ComplexMatrix(new Complex[][]{
                     {kcp.times(Complex.exp(ipos.times(kd))), kcm.times(Complex.exp(ipos.times(kd)))},
-                    {kcm.times(Complex.exp(ineg.times(kd))), kcp.times(Complex.exp(ineg.times(kd)))}}).multiplyEach(0.5);
+                    {kcm.times(Complex.exp(ineg.times(kd))), kcp.times(Complex.exp(ineg.times(kd)))}}).multiplyEach( 0.5 );
         } catch (Exception e) {
             e.printStackTrace();
             return null;
@@ -372,25 +372,18 @@ public strictfp class MatterStack {
     public void plotPropagationCurves() {
         double[] eRange = getEnergyRange();
         // X label, Y label, plot title
-        PlotFrame frame = new PlotFrame("Energy, eV", "Propagation, arb. units", "QW Propagation Curves");
+        PlotFrame frame = new PlotFrame("Energy, eV", "Log of Propagation, arb. units", "QW Propagation Curves");
         // Filling the curve data
         for (int i = 0; i < eRange.length; i++) {
             frame.append(0, Utils.erg2ev(eRange[i]), getPropagationValueLog(eRange[i]));
         }
-        // No markers
-        frame.setMarkerShape(0, 0);
 
-        // Window size 600 x 600
-        frame.setSize(600, 600);
+        frame.setMarkerShape(0, 0); // No markers
+        frame.setSize(600, 600);    // Window size 600 x 600
+        frame.setConnected(true);   // Dots are connected with a line
 
-        // Dots are connected with a line
-        frame.setConnected(true);
-
-        // Materializing the plot
-        frame.setVisible(true);
-
-        // Behavior of the close button
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);   // Behavior of the close button
+        frame.setVisible(true);     // Materializing the plot window
     }
 
 

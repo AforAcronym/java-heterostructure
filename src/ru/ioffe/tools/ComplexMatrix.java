@@ -1,3 +1,9 @@
+/**
+ * ComplexMatrix implements matrix operations of Complex elements
+ *
+ * The inner storage is Complex[][] double array
+ *
+ */
 package ru.ioffe.tools;
 
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
@@ -136,12 +142,19 @@ public strictfp class ComplexMatrix {
      * @param z        a Complex to assign to
      * @throws Exception if passed indexes are naegative or to large
      */
-    private void setElem(int rowIndex, int colIndex, Complex z) throws Exception {
-        if (rowIndex >= getColsNum() || colIndex >= getRowsNum() || rowIndex < 0 || colIndex < 0) {
-            throw new Exception("Invalid indices in setElem(int rowIndex, int colIndex, Complex z)");
+    private void setElem(int rowIndex, int colIndex, Complex z) {
+        try {
+            matrix[rowIndex][colIndex] = z;
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        matrix[rowIndex][colIndex] = z;
     }
+//    private void setElem(int rowIndex, int colIndex, Complex z) throws Exception {
+//        if (rowIndex >= getColsNum() || colIndex >= getRowsNum() || rowIndex < 0 || colIndex < 0) {
+//            throw new Exception("Invalid indices in setElem(int rowIndex, int colIndex, Complex z)");
+//        }
+//        matrix[rowIndex][colIndex] = z;
+//    }
 
 
     /**
@@ -179,12 +192,7 @@ public strictfp class ComplexMatrix {
     public static ComplexMatrix identityMatrix(int n) {
         ComplexMatrix mx = zeroMatrix(n, n);
         for (int i = 0; i < n; i++) {
-            try {
-                mx.setElem(i, i, Complex.fromDouble(1.0));
-            } catch (Exception e) {
-                e.printStackTrace();
-                return null;
-            }
+            mx.setElem(i, i, Complex.fromDouble(1.0));
         }
         return mx;
     }
@@ -641,10 +649,13 @@ public strictfp class ComplexMatrix {
 
 
     public static void main(String[] args) throws Exception {
-        ComplexMatrix a = new ComplexMatrix(new Complex[][]{{new Complex(1, 2), new Complex(2, 4)},
-                {new Complex(3, 3), new Complex(4, 5)}});
-        ComplexMatrix b = new ComplexMatrix(new Complex[][]{{new Complex(1, -3), new Complex(3, 2)},
-                {new Complex(2, -1), new Complex(2, 3)}});
+
+        ComplexMatrix a = new ComplexMatrix( new Complex[][]{
+                {new Complex(1, 1), new Complex(2, 2)},
+                {new Complex(3, 3), new Complex(4, 4)}});
+        ComplexMatrix b = new ComplexMatrix(new Complex[][]{
+                {new Complex(-1, -1), new Complex(-1, -1)},
+                {new Complex(-2, -2), new Complex(-2, -2)}});
         System.out.println(a.getColsNum());
         System.out.println(a.getRowsNum());
         System.out.println(a.getSizeString());
@@ -677,8 +688,8 @@ public strictfp class ComplexMatrix {
         System.out.println("E * mx = " + mxone.multiply(mx));
 
         System.out.println("mx - mx = " + mx.subtract(mx));
-        System.out.println(mx.multiply(mx.multiplyEach(new Complex(2, 0))));
+        System.out.println("mx * mx * 2 " + mx.multiply(mx.multiplyEach(new Complex(2, 0))));
 
-        System.out.println(identityMatrix(3));
+        System.out.println("Identity matrix 3x3 = " + identityMatrix(3));
     }
 }
