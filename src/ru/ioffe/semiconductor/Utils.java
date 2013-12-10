@@ -14,6 +14,7 @@ import org.opensourcephysics.numerics.Integral;
  * @version 0.1
  */
 public strictfp class Utils {
+    final static int DEFAULT_NUMBER_OF_STEPS = 10000;
 
     /**
      * Vegard's law
@@ -83,8 +84,7 @@ public strictfp class Utils {
      * @return (double) lattice parameter, in angstroms
      */
     public static double debye(double x) {
-        int prec = 10000; // Default precision
-        return debye(x, prec);
+        return debye(x, DEFAULT_NUMBER_OF_STEPS);
     }
 
 
