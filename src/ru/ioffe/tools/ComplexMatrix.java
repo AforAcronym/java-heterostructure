@@ -42,7 +42,7 @@ public strictfp class ComplexMatrix {
      *
      * @param rowSize size of rows
      * @param colSize size of columns
-     * @return
+     * @return  ComplexMatrix of nulls
      */
     private static ComplexMatrix emptyMatrix(int rowSize, int colSize) {
         // [ [row], [row], [row], [row]...]
@@ -59,7 +59,7 @@ public strictfp class ComplexMatrix {
     /**
      * Get number of the matrix rows
      *
-     * @return
+     * @return Number of rows
      */
     public int getRowsNum() {
         return matrix.length;
@@ -69,7 +69,7 @@ public strictfp class ComplexMatrix {
     /**
      * Get number of the matrix columns
      *
-     * @return
+     * @return Number of columns
      */
     public int getColsNum() {
         return matrix[0].length;
@@ -79,7 +79,7 @@ public strictfp class ComplexMatrix {
     /**
      * Get size of the matrix columns
      *
-     * @return
+     * @return Size of a column (=number of rows in the matrix)
      */
     public int getColSize() {
         return getRowsNum();
@@ -89,7 +89,7 @@ public strictfp class ComplexMatrix {
     /**
      * Get size of the matrix rows
      *
-     * @return
+     * @return  Size of a row (=number of columns in the matrix)
      */
     public int getRowSize() {
         return getColsNum();
@@ -121,7 +121,7 @@ public strictfp class ComplexMatrix {
      *
      * @param ri row index
      * @param ci column index
-     * @return
+     * @return The matrix element (Complex or null)
      */
     public Complex getElem(int ri, int ci) {
         try {
@@ -140,7 +140,6 @@ public strictfp class ComplexMatrix {
      * @param rowIndex row index
      * @param colIndex column index
      * @param z        a Complex to assign to
-     * @throws Exception if passed indexes are naegative or to large
      */
     private void setElem(int rowIndex, int colIndex, Complex z) {
         try {
@@ -160,9 +159,9 @@ public strictfp class ComplexMatrix {
     /**
      * Generate zero matrix of passed dimensions
      *
-     * @param rowSize
-     * @param colSize
-     * @return
+     * @param rowSize number of columns
+     * @param colSize number of rows
+     * @return a matrix fully populated with Complex(0,0)
      */
     public static ComplexMatrix zeroMatrix(int rowSize, int colSize) {
         // A row size is number of columns
@@ -186,8 +185,8 @@ public strictfp class ComplexMatrix {
      * Return square n x n matrix with Complex 1+0i on its diagonal and
      * zeros elsewhere
      *
-     * @param n
-     * @return
+     * @param n dimension for the n x n matrix
+     * @return Square identity matrix
      */
     public static ComplexMatrix identityMatrix(int n) {
         ComplexMatrix mx = zeroMatrix(n, n);
@@ -201,15 +200,12 @@ public strictfp class ComplexMatrix {
     /**
      * Check whether matrices have equal sizes
      *
-     * @param a
-     * @param b
-     * @return
+     * @param a ComplexMatrix instance
+     * @param b ComplexMatrix instance
+     * @return boolean result
      */
     public static boolean checkConsistence(ComplexMatrix a, ComplexMatrix b) {
-        if (a.getSizeString().equals(b.getSizeString())) {
-            return true;
-        }
-        return false;
+        return a.getSizeString().equals(b.getSizeString());
     }
 
 
@@ -230,9 +226,8 @@ public strictfp class ComplexMatrix {
     /**
      * Multiply each element in the matrix by a Complex.
      *
-     * @param z
+     * @param z Complex multiplier
      * @return A new ComplexMatrix instance
-     * @throws Exception
      */
     public ComplexMatrix multiplyEach(Complex z) {
         ComplexMatrix mx = zeroMatrix(getRowSize(), getColSize());
@@ -255,8 +250,7 @@ public strictfp class ComplexMatrix {
      * Multiply each element in the matrix by a double
      *
      * @param c double number
-     * @return
-     * @throws Exception
+     * @return New ComplexMatrix instance
      */
     public ComplexMatrix multiplyEach(double c) {
         return multiplyEach(Complex.fromDouble(c));
@@ -277,7 +271,7 @@ public strictfp class ComplexMatrix {
      * Add another matrix to this one. The initial matrix is immutable, and
      * this method returns a new ComplexMatrix object
      *
-     * @param b CompleMatrix of the same size
+     * @param b ComplexMatrix of the same size
      * @return sum of this matrix and b
      * @throws Exception
      */
@@ -302,7 +296,6 @@ public strictfp class ComplexMatrix {
      *
      * @param b CompleMatrix of the same size
      * @return sum of this matrix and b
-     * @throws Exception
      */
     public ComplexMatrix subtract(ComplexMatrix b) {
         try {
@@ -319,7 +312,7 @@ public strictfp class ComplexMatrix {
      *
      * @param rowSize size of a row
      * @param colSize size of a column
-     * @return
+     * @return boolean result
      */
     public boolean hasDimensions(int rowSize, int colSize) {
         return (getRowSize() == rowSize && getColSize() == colSize);
@@ -332,7 +325,7 @@ public strictfp class ComplexMatrix {
      *
      * @param subRowSize rows number of the left-top submatrix
      * @param subColSize columns number of the left-top submatrix
-     * @return
+     * @return Array of ComplexMatrix sub-matrices {left-top, right-top, left-bottom, right-bottom}
      */
     public ComplexMatrix[] divideMatrixIntoFour(int subRowSize, int subColSize) {
 
@@ -340,7 +333,9 @@ public strictfp class ComplexMatrix {
         int bigColSize = getColSize();
 
 		/*
-		 * a b c d
+		 * a b
+		 * c d
+		 *
 		 */
         ComplexMatrix a = emptyMatrix(subRowSize, subColSize);
         ComplexMatrix b = emptyMatrix(bigRowSize - subRowSize, subColSize);
@@ -391,7 +386,7 @@ public strictfp class ComplexMatrix {
      * @param b right-top matrix
      * @param c left-bottom matrix
      * @param d right-bottom matrix
-     * @return
+     * @return ComplexMatrix
      */
     private ComplexMatrix joinMatrixFromFour(ComplexMatrix a, ComplexMatrix b, ComplexMatrix c, ComplexMatrix d) {
 
@@ -464,7 +459,7 @@ public strictfp class ComplexMatrix {
      * implemented ones depending on matrix size
      *
      * @param mx ComplexMatrix of appropriate size for multiplication
-     * @return
+     * @return The resulting ComplexMatrix
      * @throws Exception
      */
     public ComplexMatrix multiply(ComplexMatrix mx) throws Exception {
@@ -485,8 +480,8 @@ public strictfp class ComplexMatrix {
      * NOT IMPLEMENTED Strassen's algorithm for matrices n x n where n =
      * 2^n; as fast as O(n^2.8)
      *
-     * @param mx
-     * @return
+     * @param mx ComplexMatrix of appropriate size for multiplication
+     * @return The resulting ComplexMatrix
      */
     @SuppressWarnings("unused")
     @Deprecated
@@ -590,8 +585,8 @@ public strictfp class ComplexMatrix {
     /**
      * Straight forward matrix multiplication
      *
-     * @param mx
-     * @return
+     * @param mx ComplexMatrix of appropriate size for multiplication
+     * @return  The resulting ComplexMatrix
      */
     private ComplexMatrix straightForwardMultiply(ComplexMatrix mx) {
         ComplexMatrix res = zeroMatrix(getColSize(), getColSize());
@@ -616,7 +611,7 @@ public strictfp class ComplexMatrix {
     /**
      * Get transposed matrix
      *
-     * @return
+     * @return The transposed ComplexMatrix
      */
     public ComplexMatrix transpose() {
         // TODO implement
