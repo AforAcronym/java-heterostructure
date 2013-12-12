@@ -42,7 +42,7 @@ public strictfp class ComplexMatrix {
      *
      * @param rowSize size of rows
      * @param colSize size of columns
-     * @return  ComplexMatrix of nulls
+     * @return ComplexMatrix of nulls
      */
     private static ComplexMatrix emptyMatrix(int rowSize, int colSize) {
         // [ [row], [row], [row], [row]...]
@@ -89,7 +89,7 @@ public strictfp class ComplexMatrix {
     /**
      * Get size of the matrix rows
      *
-     * @return  Size of a row (=number of columns in the matrix)
+     * @return Size of a row (=number of columns in the matrix)
      */
     public int getRowSize() {
         return getColsNum();
@@ -333,7 +333,7 @@ public strictfp class ComplexMatrix {
         int bigColSize = getColSize();
 
 		/*
-		 * a b
+         * a b
 		 * c d
 		 *
 		 */
@@ -586,7 +586,7 @@ public strictfp class ComplexMatrix {
      * Straight forward matrix multiplication
      *
      * @param mx ComplexMatrix of appropriate size for multiplication
-     * @return  The resulting ComplexMatrix
+     * @return The resulting ComplexMatrix
      */
     private ComplexMatrix straightForwardMultiply(ComplexMatrix mx) {
         ComplexMatrix res = zeroMatrix(getColSize(), getColSize());
@@ -621,7 +621,8 @@ public strictfp class ComplexMatrix {
 
     @Override
     public String toString() {
-        StringBuffer sb = new StringBuffer();
+        // StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder(); // Intellij IDEA advised to use StringBuilder instead of StringBuffer
         sb.append("ComplexMatrix [\n");
         for (int i = 0; i < getRowsNum(); i++) {
             sb.append("  [");
@@ -645,7 +646,7 @@ public strictfp class ComplexMatrix {
 
     public static void main(String[] args) throws Exception {
 
-        ComplexMatrix a = new ComplexMatrix( new Complex[][]{
+        ComplexMatrix a = new ComplexMatrix(new Complex[][]{
                 {new Complex(1, 1), new Complex(2, 2)},
                 {new Complex(3, 3), new Complex(4, 4)}});
         ComplexMatrix b = new ComplexMatrix(new Complex[][]{
