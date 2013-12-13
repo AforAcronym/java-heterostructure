@@ -17,12 +17,11 @@ public strictfp class MatterStack {
     private double ENERGY_STEP = Utils.ev2erg(0.001);
 
     // per 1 nm
-    private final int X_POINTS_DENSITY = 40;
+    // private final int X_POINTS_DENSITY = 40; // is made local
 
     private double[] eigenEnergy = null;
     private double[] energyRange = null;
-    private ArrayList<MatterInterval> intervals = new ArrayList<MatterInterval>();
-    private double y_shift = 0;
+    private ArrayList<MatterInterval> intervals = new ArrayList<>();
 
     // private boolean fictitiousRegionReady = false;
     // private boolean VERBOSE = false;
@@ -37,28 +36,36 @@ public strictfp class MatterStack {
 
 
     /**
-     * @param _intervals
+     * @param _intervals_eV ArrayList of MatterInterval instances with potential in eV
      */
-    public MatterStack(ArrayList<MatterInterval> _intervals) {
+    public MatterStack(ArrayList<MatterInterval> _intervals_eV) {
 
-        this.intervals = _intervals;
+        intervals = _intervals_eV;
         double width = 0;
-        y_shift = Utils.ev2erg(intervals.get(0).getY());
+        double y_shift = Utils.ev2erg(intervals.get(0).getY());
 
+        // Ordering the intervals
         for (MatterInterval inl : intervals) {
             inl.setXStart(width);
             width += inl.getWidth();
             inl.setY(Utils.ev2erg(inl.getY()));
+            // We want to get minimal potential
             if (y_shift > inl.getY()) {
                 y_shift = inl.getY();
             }
         }
 
-        for (MatterInterval inl : intervals) {
-            inl.setY(inl.getY() - y_shift);
+        // Align potentials to zero
+        if (y_shift != 0.0) {
+            for (MatterInterval inl : intervals) {
+                inl.setY(inl.getY() - y_shift);
+            }
         }
 
+        // Reference to the last interval non-fictitious
         MatterInterval last = intervals.get(intervals.size() - 1);
+
+        // Adding fictitious interval used for calculations
         // intervals.add(new MatterInterval(width, last.getWidth() +
         // width,
         // last.getY(), last.getMass(), last.getDiel()));
@@ -69,11 +76,15 @@ public strictfp class MatterStack {
 
     @Override
     public String toString() {
-        StringBuffer s = new StringBuffer();
+        // StringBuffer s = new StringBuffer();
+        StringBuilder s = new StringBuilder();
         int counter = 0;
         for (MatterInterval mi : intervals) {
-            s.append("" + (counter++) + ": ");
-            s.append(mi.toString() + "\n");
+            // [counter]: [MatterInterval]\n
+            s.append(counter++);
+            s.append(String.valueOf(": "));
+            s.append(mi);
+            s.append(String.valueOf("\n"));
         }
         return s.toString();
     }
@@ -93,7 +104,6 @@ public strictfp class MatterStack {
      * Takes index of preceding interval (between index and index+1) and energy value
      *
      * @return ComplexMatrix
-     * @throws Exception
      */
     public ComplexMatrix getLocalPropagationMatrix(int index, double energy) {
         MatterInterval inl = intervals.get(index);
@@ -120,7 +130,7 @@ public strictfp class MatterStack {
         try {
             return new ComplexMatrix(new Complex[][]{
                     {kcp.times(Complex.exp(ipos.times(kd))), kcm.times(Complex.exp(ipos.times(kd)))},
-                    {kcm.times(Complex.exp(ineg.times(kd))), kcp.times(Complex.exp(ineg.times(kd)))}}).multiplyEach( 0.5 );
+                    {kcm.times(Complex.exp(ineg.times(kd))), kcp.times(Complex.exp(ineg.times(kd)))}}).multiplyEach(0.5);
         } catch (Exception e) {
             e.printStackTrace();
             return null;
@@ -131,9 +141,9 @@ public strictfp class MatterStack {
     /**
      * Get array of complex coefficients of exponential 1-dimensional wave function
      *
-     * @param index
-     * @param energy
-     * @return
+     * @param index  index of the interval for which the propagation matrix is to be calculated
+     * @param energy energy value in ergs
+     * @return Propagation ComplexMatrix
      */
     public ComplexMatrix getPropagationMatrix(int index, double energy) {
         ComplexMatrix mx = ComplexMatrix.identityMatrix(2);
@@ -161,7 +171,7 @@ public strictfp class MatterStack {
     /**
      * Get double array of energy range for search of eigen values. The range step is taken from ENERGY_STEP
      *
-     * @return
+     * @return Energy range in ergs between zero and second maximum among the intervals
      */
     public double[] getEnergyRange() {
         // EnergyRange is stored in instance in order not to generate it
@@ -198,9 +208,8 @@ public strictfp class MatterStack {
     /**
      * Value of propagation curve. Propagation maximums correspond to eigen states
      *
-     * @param index  index of a region/interval
      * @param energy energy in ergs
-     * @return
+     * @return propagation curve value
      */
     // public double getPropagationValue(int index, double energy) {
     // if (VERBOSE) {
@@ -226,9 +235,8 @@ public strictfp class MatterStack {
     /**
      * Derivative of the propagation curve
      *
-     * @param index  index of a region/interval
      * @param energy energy in ergs
-     * @return
+     * @return propagation curve derivative value
      */
     public double getPropagationValueDerivative(double energy) {
         return (getPropagationValue(energy + Function.CALC_TOLERANCE) - getPropagationValue(energy - Function.CALC_TOLERANCE))
@@ -246,9 +254,8 @@ public strictfp class MatterStack {
     /**
      * Log of the value of propagation curve. Propagation maximums correspond to eigen states
      *
-     * @param index  index of a region/interval
      * @param energy energy in ergs
-     * @return
+     * @return Log of propagation curve value, used in order to avoid huge numbers
      */
     private double getPropagationValueLog(double energy) {
         return Math.log(getPropagationValue(energy));
@@ -258,9 +265,8 @@ public strictfp class MatterStack {
     /**
      * Derivative of the Log of propagation curve
      *
-     * @param index  index of a region/interval
      * @param energy energy in ergs
-     * @return
+     * @return Log of propagation curve derivative value
      */
     @SuppressWarnings("unused")
     private double getPropagationValueLogDerivative(double energy) {
@@ -273,9 +279,8 @@ public strictfp class MatterStack {
     /**
      * Get propagation energy in an interval between two energy values by bisection method
      *
-     * @param index      index of region/interval
-     * @param energy_min minimal energy in ergs for the range to search in
-     * @param energy_max maximum energy in ergs for the range to search in
+     * @param energy_min minimal energy in ergs for the search range
+     * @param energy_max maximum energy in ergs for the search range
      * @return energy value in ergs if maximum is found
      */
     public double getPropagationEnergyRoot(double energy_min, double energy_max) {
@@ -371,11 +376,13 @@ public strictfp class MatterStack {
      */
     public void plotPropagationCurves() {
         double[] eRange = getEnergyRange();
+
         // X label, Y label, plot title
         PlotFrame frame = new PlotFrame("Energy, eV", "Log of Propagation, arb. units", "QW Propagation Curves");
+
         // Filling the curve data
-        for (int i = 0; i < eRange.length; i++) {
-            frame.append(0, Utils.erg2ev(eRange[i]), getPropagationValueLog(eRange[i]));
+        for (double e : eRange) {
+            frame.append(0, Utils.erg2ev(e), getPropagationValueLog(e));
         }
 
         frame.setMarkerShape(0, 0); // No markers
@@ -390,31 +397,28 @@ public strictfp class MatterStack {
     /**
      * Get eigen energies of the whole system
      *
-     * @param index
      * @return double[] of eigen energies in ergs
      */
     public double[] getEigenEnergy() {
         if (eigenEnergy != null) {
+            // Already calculated
             return eigenEnergy;
         }
-        ArrayList<Double> eigenEnergyList = new ArrayList<Double>();
+        ArrayList<Double> eigenEnergyList = new ArrayList<>();
 
-        for (int i = 1; i < intervals.size() - 1; i++) {
-//			if (intervals.get(i).getY() <= intervals.get(i - 1).getY() && intervals.get(i).getY() < intervals.get(i + 1).getY())
-//			{
-//				 for (double e : findIntervalEigenEnergies(i))
-//				 {
-//				 		if (!eigenEnergyList.contains(Double.valueOf(e)))
-//				 		{
-//				 			eigenEnergyList.add(new Double(e));
-//				 		}
-//				 }
+//        for (int i = 1; i < intervals.size() - 1; i++) {
+//			if (intervals.get(i).getY() <= intervals.get(i - 1).getY() && intervals.get(i).getY() < intervals.get(i + 1).getY()) {
+//                for (double e : findIntervalEigenEnergies(i)) {    // FIXME
+//                    if (!eigenEnergyList.contains(Double.valueOf(e))) {
+//                        eigenEnergyList.add(e);
+//                    }
+//				}
 //			}
-        }
+//        }
 
         eigenEnergy = new double[eigenEnergyList.size()];
         for (int i = 0; i < eigenEnergy.length; i++) {
-            eigenEnergy[i] = Double.valueOf(eigenEnergyList.get(i));
+            eigenEnergy[i] = eigenEnergyList.get(i);
         }
         return eigenEnergy;
     }
@@ -441,12 +445,13 @@ public strictfp class MatterStack {
     /**
      * Get the whole MatterStack width starting from index=1 (thus excluding the fictitious interval) to the last one
      *
-     * @return
+     * @return width of all the structure excluding fictitious region
      */
     public double getWidth() {
         if (intervals == null || intervals.size() == 0) {
             return 0.0;
         }
+        // TODO check indices here:
         return getSubStackWidth(1, intervals.size() - 1);
     }
 
@@ -454,7 +459,7 @@ public strictfp class MatterStack {
     /**
      * Get width of specified interval. Note that indexes start with 1 due to fictitious interval (0th)
      *
-     * @param index
+     * @param index index of an interval
      * @return the interval width
      */
     public double getIntervalWidth(int index) {
@@ -481,9 +486,9 @@ public strictfp class MatterStack {
     /**
      * Get wave function coefficients for chosen region and energy
      *
-     * @param index
-     * @param energy
-     * @return
+     * @param index  index of an interval
+     * @param energy energy level
+     * @return array of two Complex coefficients
      */
     public Complex[] getWavefunctionCoeffs(int index, double energy) {
         ComplexMatrix mx = getPropagationMatrix(index, energy);
@@ -497,14 +502,16 @@ public strictfp class MatterStack {
     /**
      * Get wave function for a state
      *
-     * @param energy
+     * @param energy Energy level in ergs
      * @return double[] array of a wave function values
      */
     public double[][] getWaveFunction(double energy) {
 
-        // Number of dots in the whole MatterStack
         // FIXME magic number
-        int numberOfDots = (int) (getWidth() * X_POINTS_DENSITY * 1000000000L);
+        long X_POINTS_DENSITY = 40 * 1000_000_000L; // 40 dots per 1 nm
+
+        // Number of dots in the whole MatterStack
+        int numberOfDots = (int) (getWidth() * X_POINTS_DENSITY);
 
         // TODO try-catch or think on long-or-int problem
         double[] waveFunction = new double[numberOfDots];
@@ -517,21 +524,18 @@ public strictfp class MatterStack {
         Complex pi = new Complex(0, 1);
         Complex mi = new Complex(0, -1);
 
-        // Going through all intervals to build the wave funtion
+        // Going through all intervals to build the wave function
         for (int k = 0; k < intervals.size(); k++) {
 
             MatterInterval inl = intervals.get(k);
 
-            // FIXME magic number
-            xLocal = inl.getGrid(X_POINTS_DENSITY * 1000000000L);
+            xLocal = inl.getGrid(X_POINTS_DENSITY);
 
             for (int i = 0; i < xLocal.length; i++) {
 
                 coef = getWavefunctionCoeffs(k, energy);
 
-                // WF = | A * exp(i*k*x) + B * exp(-i*k*x) | --
-                // doubles not
-                // complex!
+                // WF = | A * exp(i*k*x) + B * exp(-i*k*x) | -- doubles not complex!
                 waveFunction[i + counter] = (coef[0].times(Complex.exp(pi.times(inl.getWaveNumber(energy).times(
                         xLocal[i] - inl.getXStart()))))).add(
                         coef[1].times(Complex.exp(mi.times(inl.getWaveNumber(energy).times(xLocal[i] - inl.getXStart()))))).abs();
@@ -563,9 +567,7 @@ public strictfp class MatterStack {
 
     // private double[] reduceWaveFunction() {}
 
-    /**
-     * @param args
-     */
+
     @SuppressWarnings("unused")
     public static void main(String[] args) {
 
@@ -573,8 +575,8 @@ public strictfp class MatterStack {
         double dEg = 0.1;
         double qww = 2e-7;
         double qwb = qww / 2;
-        double b1w = qww * 1e2;
-        double b2w = b1w;
+//        double b1w = qww * 1e2;
+//        double b2w = b1w;
         double diel = 10;
         MatterStack a;
 
@@ -589,10 +591,10 @@ public strictfp class MatterStack {
         // a.appendNewMatterInterval(qww, Eg - dEg, 0.25, 10);
         // a.appendNewMatterInterval(b2w, Eg, 0.20, 10);
 
-        ArrayList<MatterInterval> inlList = new ArrayList<MatterInterval>();
+        ArrayList<MatterInterval> inlList = new ArrayList<>();
 
         inlList.add(new MatterInterval(2e-5, 1.4, 0.1002, diel));
-        inlList.add(new MatterInterval(3e-7, 1, 0.067, diel));
+        inlList.add(new MatterInterval(3e-7, 1.0, 0.067, diel));
         inlList.add(new MatterInterval(2e-5, 1.4, 0.1002, diel));
 
         a = new MatterStack(inlList);
